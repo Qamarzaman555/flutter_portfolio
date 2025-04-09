@@ -13,21 +13,42 @@ class FirebaseService extends GetxService {
   // About data
   Future<About> getAboutData() async {
     try {
-      print('Fetching about data from Firestore...');
+      print('🔄 Fetching about data from Firestore...');
       final docRef = _firestore.collection('about').doc('profile');
       final doc = await docRef.get();
 
       if (!doc.exists) {
-        print('About document does not exist');
+        print('❌ About document does not exist');
         throw 'About data not found';
       }
 
-      print('About document data: ${doc.data()}');
-      final about = About.fromFirestore(doc);
-      print('Parsed About object: name=${about.name}, title=${about.title}');
-      return about;
+      final data = doc.data();
+      print('📄 Raw Firestore data: $data');
+
+      if (data == null) {
+        print('❌ Document data is null');
+        throw 'About data is null';
+      }
+
+      try {
+        final about = About.fromFirestore(doc);
+        print('✅ Successfully parsed About object:');
+        print('  - Name: ${about.name}');
+        print('  - Title: ${about.title}');
+        print('  - Skills count: ${about.skills.length}');
+        print('  - Experiences count: ${about.experiences.length}');
+        print('  - Education count: ${about.education.length}');
+        print('  - Profile Image URL: ${about.profileImageUrl}');
+        return about;
+      } catch (parseError, stackTrace) {
+        print('❌ Error parsing About data:');
+        print('Error: $parseError');
+        print('Stack trace: $stackTrace');
+        throw 'Failed to parse about data: $parseError';
+      }
     } catch (e, stackTrace) {
-      print('Error fetching about data: $e');
+      print('❌ Error fetching about data:');
+      print('Error: $e');
       print('Stack trace: $stackTrace');
       throw 'Failed to fetch about data: $e';
     }
@@ -59,15 +80,46 @@ class FirebaseService extends GetxService {
   // Image caching
   Future<String> getCachedImageUrl(String imagePath) async {
     try {
+      print('🖼️ Getting cached image URL for: $imagePath');
+
+      if (imagePath.isEmpty) {
+        print('⚠️ Image path is empty');
+        return '';
+      }
+
+      // Check if the URL is already a full URL
+      if (imagePath.startsWith('http')) {
+        print('📥 URL is already a full URL, downloading directly');
+        try {
+          final file = await _cacheManager.downloadFile(imagePath);
+          print('✅ Image downloaded successfully to: ${file.file.path}');
+          return imagePath;
+        } catch (e) {
+          print('❌ Error downloading image from URL: $e');
+          return imagePath; // Return the URL even if caching fails
+        }
+      }
+
+      // If it's a storage path, get the download URL
+      print('📥 Getting download URL from Firebase Storage');
       final ref = _storage.ref().child(imagePath);
       final url = await ref.getDownloadURL();
+      print('✅ Got download URL: $url');
 
-      // Cache the image
-      await _cacheManager.downloadFile(url);
-
-      return url;
-    } catch (e) {
-      throw 'Failed to get image URL: $e';
+      try {
+        print('📥 Downloading and caching image...');
+        final file = await _cacheManager.downloadFile(url);
+        print('✅ Image cached successfully at: ${file.file.path}');
+        return url;
+      } catch (e) {
+        print('❌ Error caching image: $e');
+        return url; // Return the URL even if caching fails
+      }
+    } catch (e, stackTrace) {
+      print('❌ Error in getCachedImageUrl:');
+      print('Error: $e');
+      print('Stack trace: $stackTrace');
+      return imagePath; // Return the original path if everything fails
     }
   }
 

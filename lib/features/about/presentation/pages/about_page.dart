@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:portfolio/core/utils/responsive.dart';
 import 'package:portfolio/features/about/presentation/controllers/about_controller.dart';
 import 'package:portfolio/features/about/domain/entities/about.dart';
+import 'package:portfolio/features/home/presentation/controllers/home_controller.dart';
 
 class AboutPage extends GetView<AboutController> {
   const AboutPage({super.key});
@@ -121,7 +122,11 @@ class AboutPage extends GetView<AboutController> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        // Navigate to contact page
+                        Get.find<HomeController>()
+                            .changeIndex(2); // 2 is the index for Contact tab
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.transparent,
                         foregroundColor:

@@ -22,23 +22,56 @@ class About {
   });
 
   factory About.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-    return About(
-      name: data['name'] ?? '',
-      title: data['title'] ?? '',
-      description: data['description'] ?? '',
-      skills: List<String>.from(data['skills'] ?? []),
-      profileImageUrl: data['profileImageUrl'] ?? '',
-      socialLinks: Map<String, String>.from(data['socialLinks'] ?? {}),
-      experiences: (data['experiences'] as List<dynamic>?)
-              ?.map((e) => Experience.fromMap(e))
+    try {
+      final data = doc.data() as Map<String, dynamic>;
+      print('📝 Parsing About data from Firestore:');
+      print('  Raw data: $data');
+
+      // Parse skills
+      final skillsList = data['skills'] as List<dynamic>?;
+      final skills = skillsList?.map((e) => e.toString()).toList() ?? [];
+      print('  Skills parsed: $skills');
+
+      // Parse social links
+      final socialLinksMap = data['socialLinks'] as Map<String, dynamic>?;
+      final socialLinks = socialLinksMap?.map(
+            (key, value) => MapEntry(key, value.toString()),
+          ) ??
+          {};
+      print('  Social links parsed: $socialLinks');
+
+      // Parse experiences
+      final experiencesList = data['experiences'] as List<dynamic>?;
+      final experiences = experiencesList
+              ?.map((e) => Experience.fromMap(e as Map<String, dynamic>))
               .toList() ??
-          [],
-      education: (data['education'] as List<dynamic>?)
-              ?.map((e) => Education.fromMap(e))
+          [];
+      print('  Experiences parsed: ${experiences.length}');
+
+      // Parse education
+      final educationList = data['education'] as List<dynamic>?;
+      final education = educationList
+              ?.map((e) => Education.fromMap(e as Map<String, dynamic>))
               .toList() ??
-          [],
-    );
+          [];
+      print('  Education parsed: ${education.length}');
+
+      return About(
+        name: data['name']?.toString() ?? '',
+        title: data['title']?.toString() ?? '',
+        description: data['description']?.toString() ?? '',
+        skills: skills,
+        profileImageUrl: data['profileImageUrl']?.toString() ?? '',
+        socialLinks: socialLinks,
+        experiences: experiences,
+        education: education,
+      );
+    } catch (e, stackTrace) {
+      print('❌ Error in About.fromFirestore:');
+      print('Error: $e');
+      print('Stack trace: $stackTrace');
+      rethrow;
+    }
   }
 }
 
@@ -58,13 +91,24 @@ class Experience {
   });
 
   factory Experience.fromMap(Map<String, dynamic> map) {
-    return Experience(
-      company: map['company'] ?? '',
-      position: map['position'] ?? '',
-      period: map['period'] ?? '',
-      description: map['description'] ?? '',
-      achievements: List<String>.from(map['achievements'] ?? []),
-    );
+    try {
+      final achievementsList = map['achievements'] as List<dynamic>?;
+      final achievements =
+          achievementsList?.map((e) => e.toString()).toList() ?? [];
+
+      return Experience(
+        company: map['company']?.toString() ?? '',
+        position: map['position']?.toString() ?? '',
+        period: map['period']?.toString() ?? '',
+        description: map['description']?.toString() ?? '',
+        achievements: achievements,
+      );
+    } catch (e, stackTrace) {
+      print('❌ Error in Experience.fromMap:');
+      print('Error: $e');
+      print('Stack trace: $stackTrace');
+      rethrow;
+    }
   }
 }
 
@@ -82,11 +126,18 @@ class Education {
   });
 
   factory Education.fromMap(Map<String, dynamic> map) {
-    return Education(
-      institution: map['institution'] ?? '',
-      degree: map['degree'] ?? '',
-      period: map['period'] ?? '',
-      description: map['description'] ?? '',
-    );
+    try {
+      return Education(
+        institution: map['institution']?.toString() ?? '',
+        degree: map['degree']?.toString() ?? '',
+        period: map['period']?.toString() ?? '',
+        description: map['description']?.toString() ?? '',
+      );
+    } catch (e, stackTrace) {
+      print('❌ Error in Education.fromMap:');
+      print('Error: $e');
+      print('Stack trace: $stackTrace');
+      rethrow;
+    }
   }
 }

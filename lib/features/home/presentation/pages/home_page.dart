@@ -104,7 +104,10 @@ class HomePage extends GetView<HomeController> {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              // Navigate to contact page
+              controller.changeIndex(2); // 2 is the index for Contact tab
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -185,7 +188,10 @@ class HomePage extends GetView<HomeController> {
         const Spacer(),
         // Chat button
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            // Navigate to contact page
+            controller.changeIndex(2); // 2 is the index for Contact tab
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Theme.of(context).colorScheme.onPrimary,

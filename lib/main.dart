@@ -6,15 +6,33 @@ import 'package:portfolio/core/constants/app_routes.dart';
 import 'package:portfolio/core/services/firebase_service.dart';
 import 'package:portfolio/core/theme/app_theme.dart';
 import 'package:portfolio/core/theme/theme_controller.dart';
+// import 'package:portfolio/features/about/data/upload_dummy_data.dart';
 import 'firebase_options.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await GetStorage.init();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(const MyApp());
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    print('🔄 Initializing GetStorage...');
+    await GetStorage.init();
+
+    print('🔄 Initializing Firebase...');
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    print('✅ Firebase initialized successfully');
+
+    print('🔄 Starting dummy data upload...');
+    // final uploader = DummyDataUploader();
+    // await uploader.uploadDummyData();
+    print('✅ Dummy data upload completed');
+
+    runApp(const MyApp());
+  } catch (e, stackTrace) {
+    print('❌ Error during initialization:');
+    print('Error: $e');
+    print('Stack trace: $stackTrace');
+    rethrow;
+  }
 }
 
 class MyApp extends StatelessWidget {
