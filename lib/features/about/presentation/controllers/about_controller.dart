@@ -1,25 +1,45 @@
 import 'package:get/get.dart';
+import 'package:portfolio/core/services/firebase_service.dart';
+import 'package:portfolio/features/about/domain/entities/about.dart';
 
 class AboutController extends GetxController {
-  final _skills = <String>[].obs;
-  List<String> get skills => _skills;
+  final FirebaseService _firebaseService = Get.find<FirebaseService>();
+
+  final _about = Rxn<About>();
+  About? get about => _about.value;
+
+  final _isLoading = false.obs;
+  bool get isLoading => _isLoading.value;
+
+  final _error = RxnString();
+  String? get error => _error.value;
 
   @override
   void onInit() {
     super.onInit();
-    _loadSkills();
+    _loadAboutData();
   }
 
-  void _loadSkills() {
-    _skills.value = [
-      'Flutter',
-      'Dart',
-      'GetX',
-      'Firebase',
-      'REST APIs',
-      'Git',
-      'Clean Architecture',
-      'UI/UX Design',
-    ];
+  Future<void> _loadAboutData() async {
+    _isLoading.value = true;
+    _error.value = null;
+
+    try {
+      final aboutData = await _firebaseService.getAboutData();
+      _about.value = aboutData;
+
+      // Preload profile image
+      if (aboutData.profileImageUrl.isNotEmpty) {
+        await _firebaseService.getCachedImageUrl(aboutData.profileImageUrl);
+      }
+    } catch (e) {
+      _error.value = e.toString();
+    } finally {
+      _isLoading.value = false;
+    }
   }
-} 
+
+  Future<void> refresh() async {
+    await _loadAboutData();
+  }
+}
