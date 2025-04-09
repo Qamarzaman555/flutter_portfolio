@@ -1,7 +1,6 @@
 // project_card.dart
 import 'package:flutter/material.dart';
 import 'package:portfolio/features/work/domain/entities/project.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class ProjectCard extends StatelessWidget {
   final Project project;
@@ -19,32 +18,23 @@ class ProjectCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
-                ),
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.network(
-                      project.imageUrl,
-                      fit: BoxFit.cover,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                          // gradient: LinearGradient(
-                          //   begin: Alignment.topCenter,
-                          //   end: Alignment.bottomCenter,
-                          //   colors: [
-                          //     Colors.transparent,
-                          //     Colors.black.withOpacity(0.2),
-                          //   ],
-                          // ),
-                          ),
-                    ),
-                  ],
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12),
+                  ),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.network(
+                        project.imageUrl,
+                        fit: BoxFit.cover,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
