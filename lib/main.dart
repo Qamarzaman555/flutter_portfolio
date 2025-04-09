@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:portfolio/core/constants/app_routes.dart';
 import 'package:portfolio/core/theme/app_theme.dart';
 import 'package:portfolio/core/theme/theme_controller.dart';
 
-void main() {
+void main() async {
+  await GetStorage.init();
   runApp(const MyApp());
 }
 

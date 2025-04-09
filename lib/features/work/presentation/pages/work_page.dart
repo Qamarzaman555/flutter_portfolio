@@ -12,17 +12,18 @@ class WorkPage extends GetView<WorkController> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF121212),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Projects grid 
+          // Projects grid
           Expanded(
             child: Obx(
               () => controller.isLoading
-                  ? const Center(child: CircularProgressIndicator(color: Colors.white))
+                  ? const Center(
+                      child: CircularProgressIndicator(color: Colors.white))
                   : Responsive(
                       mobile: _buildProjectsGrid(context, 1),
                       tablet: _buildProjectsGrid(context, 2),
@@ -36,28 +37,51 @@ class WorkPage extends GetView<WorkController> {
   }
 
   Widget _buildProjectsGrid(BuildContext context, int crossAxisCount) {
-    return GridView.builder(
-      padding: const EdgeInsets.only(top: 24),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        childAspectRatio: 1.3,
-        crossAxisSpacing: 24,
-        mainAxisSpacing: 24,
-      ),
-      itemCount: controller.projects.length,
-      itemBuilder: (context, index) {
-        final project = controller.projects[index];
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFF1E1E1E),
-              borderRadius: BorderRadius.circular(12),
+    return Column(children: [
+      Column(
+        children: [
+          // Title section
+          const SizedBox(height: 32),
+          RichText(
+            text: TextSpan(
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+              children: const [
+                TextSpan(text: '0 → 1 Senior Product Designer'),
+              ],
             ),
-            child: ProjectCard(project: project),
           ),
-        );
-      },
-    );
+
+          const SizedBox(height: 8),
+          Text(
+            'with 7 years of experience turning ideas into fully realized B2B and B2C products across healthcare, cybersecurity, and finance.',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+
+          const SizedBox(height: 24),
+        ],
+      ),
+      Flexible(
+          child: GridView.builder(
+        padding: const EdgeInsets.only(top: 24),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          childAspectRatio: 1.3,
+          crossAxisSpacing: 24,
+          mainAxisSpacing: 24,
+        ),
+        itemCount: controller.projects.length,
+        itemBuilder: (context, index) {
+          final project = controller.projects[index];
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Card(
+              child: ProjectCard(project: project),
+            ),
+          );
+        },
+      ))
+    ]);
   }
 }

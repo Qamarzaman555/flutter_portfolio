@@ -29,7 +29,7 @@ class ContactController extends GetxController {
     if (_formKey.currentState?.validate() ?? false) {
       _isLoading.value = true;
       try {
-        await Future.delayed(const Duration(seconds: 2)); 
+        await Future.delayed(const Duration(seconds: 2));
         Get.snackbar(
           'Success',
           'Message sent successfully!',
@@ -53,4 +53,4 @@ class ContactController extends GetxController {
     _emailController.clear();
     _messageController.clear();
   }
-} 
+}

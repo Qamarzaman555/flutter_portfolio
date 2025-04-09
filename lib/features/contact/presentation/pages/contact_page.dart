@@ -1,42 +1,187 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:portfolio/core/utils/responsive.dart';
 import 'package:portfolio/features/contact/presentation/controllers/contact_controller.dart';
 
-class ContactPage extends GetView<ContactController> {
+class ContactPage extends StatelessWidget {
   const ContactPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final ContactController controller = Get.find<ContactController>();
+
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.bottomLeft,
-            end: Alignment.topRight,
-            colors: [
-              Theme.of(context).colorScheme.tertiary.withOpacity(0.1),
-              Theme.of(context).colorScheme.background,
-            ],
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: Responsive(
-              mobile: _buildContent(context),
-              tablet: _buildContent(context),
-              desktop: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: SingleChildScrollView(
+          child: Center(
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 800),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+              child: Column(
                 children: [
-                  Expanded(
-                    flex: 1,
-                    child: _buildContactInfo(context),
+                  const Text(
+                    "Let's go to market",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 38,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(width: 32),
-                  Expanded(
-                    flex: 2,
-                    child: _buildContactForm(context),
+                  const SizedBox(height: 16),
+                  const Text(
+                    "Ready to take your product from 0 → 1 or looking to expand your team?\nReach out below.",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 40),
+                  Card(
+                    color: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(color: Colors.grey.shade800),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(30),
+                      child: Form(
+                        key: controller.formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildLabel('Name'),
+                            const SizedBox(height: 8),
+                            _buildTextField(
+                              controller: controller.nameController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter your name';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            _buildLabel('Email'),
+                            const SizedBox(height: 8),
+                            _buildTextField(
+                              controller: controller.emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter your email';
+                                }
+                                if (!GetUtils.isEmail(value)) {
+                                  return 'Please enter a valid email';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            _buildLabel('Company'),
+                            const SizedBox(height: 8),
+                            _buildTextField(
+                              hintText: 'Optional',
+                            ),
+                            const SizedBox(height: 20),
+                            _buildLabel('Message'),
+                            const SizedBox(height: 8),
+                            _buildTextField(
+                              controller: controller.messageController,
+                              hintText: 'Tell me about your project or idea...',
+                              maxLines: 5,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter your message';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: Checkbox(
+                                    value: true,
+                                    onChanged: (value) {},
+                                    fillColor: MaterialStateProperty.all(
+                                        Colors.grey.shade700),
+                                    checkColor: Colors.black,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                const Text(
+                                  'I accept this information will be used to contact me.',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 50,
+                              child: Obx(
+                                () => ElevatedButton.icon(
+                                  onPressed: controller.isLoading
+                                      ? null
+                                      : controller.submitForm,
+                                  icon: const Icon(Icons.send_outlined),
+                                  label: controller.isLoading
+                                      ? const SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.white,
+                                          ),
+                                        )
+                                      : const Text('Send message'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.grey.shade600,
+                                    foregroundColor: Colors.white,
+                                    disabledBackgroundColor:
+                                        Colors.grey.shade800,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 60),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '© 2025 Brendan Ciccone',
+                        style: TextStyle(color: Colors.grey.shade500),
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        icon: Icon(Icons.link, color: Colors.grey.shade500),
+                        onPressed: () {},
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.code, color: Colors.grey.shade500),
+                        onPressed: () {},
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.language, color: Colors.grey.shade500),
+                        onPressed: () {},
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.play_circle_outline,
+                            color: Colors.grey.shade500),
+                        onPressed: () {},
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -47,260 +192,53 @@ class ContactPage extends GetView<ContactController> {
     );
   }
 
-  Widget _buildContent(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Get in Touch',
-          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Feel free to reach out to me for any inquiries or opportunities',
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7),
-          ),
-        ),
-        const SizedBox(height: 32),
-        _buildContactInfo(context),
-        const SizedBox(height: 32),
-        _buildContactForm(context),
-      ],
-    );
-  }
-
-  Widget _buildContactInfo(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Contact Information',
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 16),
-        _buildContactInfoCard(
-          context,
-          Icons.email,
-          'Email',
-          'john.doe@example.com',
-          () {
-          },
-        ),
-        const SizedBox(height: 16),
-        _buildContactInfoCard(
-          context,
-          Icons.phone,
-          'Phone',
-          '+1 (123) 456-7890',
-          () {
-          },
-        ),
-        const SizedBox(height: 16),
-        _buildContactInfoCard(
-          context,
-          Icons.location_on,
-          'Location',
-          'San Francisco, CA',
-          () {
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildContactForm(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Send a Message',
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 16),
-        Form(
-          key: controller.formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildTextField(
-                controller: controller.nameController,
-                label: 'Name',
-                icon: Icons.person,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              _buildTextField(
-                controller: controller.emailController,
-                label: 'Email',
-                icon: Icons.email,
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  if (!GetUtils.isEmail(value)) {
-                    return 'Please enter a valid email';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              _buildTextField(
-                controller: controller.messageController,
-                label: 'Message',
-                icon: Icons.message,
-                maxLines: 5,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your message';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 24),
-              Obx(
-                () => ElevatedButton(
-                  onPressed: controller.isLoading ? null : controller.submitForm,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: controller.isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                          ),
-                        )
-                      : const Text(
-                          'Send Message',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildContactInfoCard(
-    BuildContext context,
-    IconData icon,
-    String title,
-    String value,
-    VoidCallback onTap,
-  ) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  icon,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      value,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-              ),
-            ],
-          ),
-        ),
+  Widget _buildLabel(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 16,
       ),
     );
   }
 
   Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-    TextInputType? keyboardType,
+    TextEditingController? controller,
+    String? hintText,
     int maxLines = 1,
+    TextInputType? keyboardType,
     String? Function(String?)? validator,
   }) {
     return TextFormField(
       controller: controller,
+      maxLines: maxLines,
+      keyboardType: keyboardType,
+      validator: validator,
+      style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        hintText: hintText,
+        hintStyle: TextStyle(color: Colors.grey.shade600),
+        filled: true,
+        fillColor: Colors.black,
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: Colors.grey.withOpacity(0.3),
-          ),
+          borderRadius: BorderRadius.circular(4),
+          borderSide: BorderSide(color: Colors.grey.shade700),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: Theme.of(Get.context!).colorScheme.primary,
-          ),
+          borderRadius: BorderRadius.circular(4),
+          borderSide: const BorderSide(color: Colors.white),
         ),
-        filled: true,
-        fillColor: Colors.grey.withOpacity(0.05),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4),
+          borderSide: const BorderSide(color: Colors.red),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4),
+          borderSide: const BorderSide(color: Colors.red),
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
-      keyboardType: keyboardType,
-      maxLines: maxLines,
-      validator: validator,
-      onTap: () {
-        // Clear any previous error messages when the field is tapped
-        this.controller.formKey.currentState?.validate();
-      },
     );
   }
-} 
+}

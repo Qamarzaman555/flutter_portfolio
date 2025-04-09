@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 class ProjectCard extends StatelessWidget {
   final Project project;
 
-  const ProjectCard({super.key, required this.project}) ;
+  const ProjectCard({super.key, required this.project});
 
   @override
   Widget build(BuildContext context) {
@@ -34,15 +34,15 @@ class ProjectCard extends StatelessWidget {
                     ),
                     Container(
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.transparent,
-                            Colors.black.withOpacity(0.2),
-                          ],
-                        ),
-                      ),
+                          // gradient: LinearGradient(
+                          //   begin: Alignment.topCenter,
+                          //   end: Alignment.bottomCenter,
+                          //   colors: [
+                          //     Colors.transparent,
+                          //     Colors.black.withOpacity(0.2),
+                          //   ],
+                          // ),
+                          ),
                     ),
                   ],
                 ),
@@ -55,21 +55,19 @@ class ProjectCard extends StatelessWidget {
                 children: [
                   Text(
                     project.title,
-                    style: GoogleFonts.inter(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 4),
                   Text(
                     project.description,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      color: Colors.white.withOpacity(0.7),
-                    ),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.7),
+                        ),
                   ),
                 ],
               ),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SpontivlyProjectCard extends StatelessWidget {
-  const SpontivlyProjectCard({Key? key}) : super(key: key);
+  const SpontivlyProjectCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,19 +34,19 @@ class SpontivlyProjectCard extends StatelessWidget {
               children: [
                 Text(
                   'Spontivly',
-                  style: GoogleFonts.inter(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'Social analytics dashboard with data visualization',
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    color: Colors.white.withOpacity(0.7),
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.7),
+                      ),
                 ),
               ],
             ),
