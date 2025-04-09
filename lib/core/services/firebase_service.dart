@@ -36,10 +36,22 @@ class FirebaseService extends GetxService {
   // Projects data
   Future<List<Project>> getProjects() async {
     try {
+      print('Fetching projects from Firestore...');
       final snapshot =
           await _firestore.collection('projects').orderBy('order').get();
-      return snapshot.docs.map((doc) => Project.fromFirestore(doc)).toList();
-    } catch (e) {
+
+      print('Found ${snapshot.docs.length} projects');
+      final projects = snapshot.docs.map((doc) {
+        print('Processing project: ${doc.id}');
+        print('Project data: ${doc.data()}');
+        return Project.fromFirestore(doc);
+      }).toList();
+
+      print('Successfully parsed ${projects.length} projects');
+      return projects;
+    } catch (e, stackTrace) {
+      print('Error fetching projects: $e');
+      print('Stack trace: $stackTrace');
       throw 'Failed to fetch projects: $e';
     }
   }

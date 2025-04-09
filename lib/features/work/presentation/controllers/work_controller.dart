@@ -34,47 +34,47 @@ class WorkController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    print('WorkController initialized');
     _loadProjects();
   }
 
   Future<void> _loadProjects() async {
+    print('Loading projects...');
     _isLoading.value = true;
     _error.value = null;
 
     try {
+      print('Attempting to fetch projects from Firebase service...');
       final projectsList = await _firebaseService.getProjects();
+      print('Successfully fetched ${projectsList.length} projects');
       _projects.value = projectsList;
 
       // Preload project images
       for (final project in projectsList) {
+        print('Preloading images for project: ${project.title}');
         await _firebaseService.preloadProjectImages(project);
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Error in _loadProjects: $e');
+      print('Stack trace: $stackTrace');
       _error.value = e.toString();
+      Get.snackbar(
+        'Error',
+        'Failed to load projects: $e',
+        snackPosition: SnackPosition.BOTTOM,
+      );
     } finally {
       _isLoading.value = false;
     }
   }
 
   void setCategory(String? category) {
+    print('Setting category to: $category');
     _selectedCategory.value = category;
   }
 
   Future<void> refresh() async {
+    print('Refreshing projects...');
     await _loadProjects();
   }
-}
-
-class ProjectModel {
-  final String title;
-  final String description;
-  final String imageUrl;
-  final List<String> technologies;
-
-  ProjectModel({
-    required this.title,
-    required this.description,
-    required this.imageUrl,
-    required this.technologies,
-  });
 }
