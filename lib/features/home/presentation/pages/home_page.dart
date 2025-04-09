@@ -33,9 +33,19 @@ class HomePage extends GetView<HomeController> {
                 desktop: _buildDesktopHeader(context, themeController),
               ),
 
-              // Main content area
+              // Main content area with transition
               Expanded(
-                child: Obx(() => _buildMainContent(controller.selectedIndex)),
+                child: Obx(() => AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      transitionBuilder:
+                          (Widget child, Animation<double> animation) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        );
+                      },
+                      child: _buildMainContent(controller.selectedIndex),
+                    )),
               ),
             ],
           ),
