@@ -4,6 +4,7 @@ import 'package:portfolio/core/utils/responsive.dart';
 import 'package:portfolio/features/about/presentation/controllers/about_controller.dart';
 import 'package:portfolio/features/about/domain/entities/about.dart';
 import 'package:portfolio/features/home/presentation/controllers/home_controller.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutPage extends GetView<AboutController> {
   const AboutPage({super.key});
@@ -440,7 +441,40 @@ class AboutPage extends GetView<AboutController> {
   Widget _buildSocialIcon(
       BuildContext context, IconData icon, String label, String? url) {
     return InkWell(
-      onTap: url != null ? () {} : null,
+      onTap: url != null
+          ? () async {
+              try {
+                final uri = Uri.parse(url);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(
+                    uri,
+                    mode: LaunchMode.externalApplication,
+                  );
+                } else {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Could not open $label link'),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: Theme.of(context).colorScheme.error,
+                      ),
+                    );
+                  }
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content:
+                          Text('Error opening $label link: ${e.toString()}'),
+                      behavior: SnackBarBehavior.floating,
+                      backgroundColor: Theme.of(context).colorScheme.error,
+                    ),
+                  );
+                }
+              }
+            }
+          : null,
       borderRadius: BorderRadius.circular(8),
       child: Container(
         padding: const EdgeInsets.all(8),
@@ -452,12 +486,15 @@ class AboutPage extends GetView<AboutController> {
             width: 1,
           ),
         ),
-        child: Icon(
-          icon,
-          color: url != null
-              ? Theme.of(context).colorScheme.onSurface
-              : Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
-          size: 20,
+        child: Tooltip(
+          message: url != null ? 'Open $label' : '$label link not available',
+          child: Icon(
+            icon,
+            color: url != null
+                ? Theme.of(context).colorScheme.onSurface
+                : Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+            size: 20,
+          ),
         ),
       ),
     );
