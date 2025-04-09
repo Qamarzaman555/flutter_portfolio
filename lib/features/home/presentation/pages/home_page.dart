@@ -24,150 +24,203 @@ class HomePage extends GetView<HomeController> {
             horizontal: max(16, MediaQuery.of(context).size.width * 0.5 - 500),
             vertical: 16,
           ),
-          child: Container(
-            color: Colors.transparent,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header with profile and navigation
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .outline
-                            .withOpacity(0.1),
-                        width: 1,
-                      ),
+          child: Column(
+            children: [
+              // Header
+              Responsive(
+                mobile: _buildMobileHeader(context, themeController),
+                tablet: _buildDesktopHeader(context, themeController),
+                desktop: _buildDesktopHeader(context, themeController),
+              ),
+
+              // Main content area
+              Expanded(
+                child: Obx(() => _buildMainContent(controller.selectedIndex)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMobileHeader(
+      BuildContext context, ThemeController themeController) {
+    return Column(
+      children: [
+        // Profile section
+        Row(
+          children: [
+            CircleAvatar(
+              radius: 24,
+              backgroundColor:
+                  Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              child: Text(
+                'BC',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.w600,
                     ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Brendan Ciccone',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Profile section
-                      Row(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withOpacity(0.2),
-                                width: 2,
-                              ),
-                            ),
-                            child: CircleAvatar(
-                              radius: 20,
-                              backgroundImage:
-                                  const AssetImage('assets/images/profile.jpg'),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Brendan Ciccone',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                          ),
-                        ],
-                      ),
-
-                      // Navigation tabs
-                      Responsive(
-                        mobile: Container(), // Hidden on mobile
-                        tablet: _buildNavTabs(context),
-                        desktop: _buildNavTabs(context),
-                      ),
-
-                      // Action buttons
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: Obx(() => Icon(
-                                  themeController.isDarkMode
-                                      ? Icons.light_mode
-                                      : Icons.dark_mode,
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
-                                )),
-                            onPressed: themeController.changeTheme,
-                          ),
-                          const SizedBox(width: 8),
-                          Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Theme.of(context).colorScheme.primary,
-                                  Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withOpacity(0.8),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                // Handle let's chat action
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent,
-                                foregroundColor:
-                                    Theme.of(context).colorScheme.onPrimary,
-                                elevation: 0,
-                                shadowColor: Colors.transparent,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 12),
-                              ),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "Let's chat",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelLarge
-                                        ?.copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onPrimary,
-                                        ),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Icon(
-                                    Icons.arrow_forward,
-                                    size: 18,
-                                    color:
-                                        Theme.of(context).colorScheme.onPrimary,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                  Text(
+                    'Product Designer',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onBackground
+                              .withOpacity(0.7),
+                        ),
                   ),
+                ],
+              ),
+            ),
+            IconButton(
+              icon: Icon(
+                themeController.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                color: Theme.of(context).colorScheme.onBackground,
+              ),
+              onPressed: themeController.changeTheme,
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        // Navigation tabs
+        _buildNavTabs(context),
+        const SizedBox(height: 16),
+        // Chat button
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Let's chat",
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
                 ),
-
-                // Main content area
-                Expanded(
-                  child: Obx(() => _buildMainContent(controller.selectedIndex)),
+                const SizedBox(width: 4),
+                Icon(
+                  Icons.arrow_forward,
+                  size: 18,
+                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
               ],
             ),
           ),
         ),
-      ),
+      ],
+    );
+  }
+
+  Widget _buildDesktopHeader(
+      BuildContext context, ThemeController themeController) {
+    return Row(
+      children: [
+        // Profile section
+        Row(
+          children: [
+            CircleAvatar(
+              radius: 24,
+              backgroundColor:
+                  Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              child: Text(
+                'BC',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Brendan Ciccone',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+                Text(
+                  'Product Designer',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onBackground
+                            .withOpacity(0.7),
+                      ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        const Spacer(),
+        // Navigation tabs
+        _buildNavTabs(context),
+        const Spacer(),
+        // Chat button
+        ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Let's chat",
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Icons.arrow_forward,
+                size: 18,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 16),
+        IconButton(
+          icon: Icon(
+            themeController.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
+          onPressed: themeController.changeTheme,
+        ),
+      ],
     );
   }
 

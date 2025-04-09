@@ -9,10 +9,14 @@ class ContactPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final ContactController controller = Get.find<ContactController>();
 
-    return Scaffold(
-      body: GestureDetector(
+    return Focus(
+      onFocusChange: (hasFocus) {
+        if (!hasFocus) {
+          FocusScope.of(context).unfocus();
+        }
+      },
+      child: GestureDetector(
         onTap: () {
-          // Unfocus any text field when tapping outside
           FocusScope.of(context).unfocus();
         },
         child: SingleChildScrollView(
@@ -55,17 +59,13 @@ class ContactPage extends StatelessWidget {
                             const SizedBox(height: 8),
                             _buildTextField(
                               controller: controller.nameController,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your name';
-                                }
-                                return null;
-                              },
                               focusNode: controller.nameFocusNode,
                               onFieldSubmitted: (_) {
+                                controller.nameFocusNode.unfocus();
                                 FocusScope.of(context)
                                     .requestFocus(controller.emailFocusNode);
                               },
+                              autoFocus: true,
                             ),
                             const SizedBox(height: 20),
                             _buildLabel('Email'),
@@ -75,6 +75,7 @@ class ContactPage extends StatelessWidget {
                               focusNode: controller.emailFocusNode,
                               keyboardType: TextInputType.emailAddress,
                               onFieldSubmitted: (_) {
+                                controller.emailFocusNode.unfocus();
                                 FocusScope.of(context)
                                     .requestFocus(controller.messageFocusNode);
                               },
@@ -94,6 +95,7 @@ class ContactPage extends StatelessWidget {
                             _buildTextField(
                               focusNode: controller.companyFocusNode,
                               onFieldSubmitted: (_) {
+                                controller.companyFocusNode.unfocus();
                                 FocusScope.of(context)
                                     .requestFocus(controller.messageFocusNode);
                               },
@@ -231,11 +233,13 @@ class ContactPage extends StatelessWidget {
     TextInputType? keyboardType,
     String? Function(String?)? validator,
     void Function(String)? onFieldSubmitted,
+    bool autoFocus = false,
   }) {
     return TextFormField(
       controller: controller,
       focusNode: focusNode,
       maxLines: maxLines,
+      autofocus: autoFocus,
       keyboardType: keyboardType,
       validator: validator,
       onFieldSubmitted: onFieldSubmitted,
