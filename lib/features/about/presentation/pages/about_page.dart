@@ -374,7 +374,7 @@ class AboutPage extends GetView<AboutController> {
               ),
         ),
         const SizedBox(height: 16),
-        ...education.map((edu) => _buildEducationItem(context, edu)).toList(),
+        ...education.map((edu) => _buildEducationItem(context, edu)),
       ],
     );
   }
