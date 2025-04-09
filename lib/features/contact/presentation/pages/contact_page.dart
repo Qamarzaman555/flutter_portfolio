@@ -12,6 +12,7 @@ class ContactPage extends StatelessWidget {
     return Scaffold(
       body: GestureDetector(
         onTap: () {
+          // Unfocus any text field when tapping outside
           FocusScope.of(context).unfocus();
         },
         child: SingleChildScrollView(
@@ -60,13 +61,23 @@ class ContactPage extends StatelessWidget {
                                 }
                                 return null;
                               },
+                              focusNode: controller.nameFocusNode,
+                              onFieldSubmitted: (_) {
+                                FocusScope.of(context)
+                                    .requestFocus(controller.emailFocusNode);
+                              },
                             ),
                             const SizedBox(height: 20),
                             _buildLabel('Email'),
                             const SizedBox(height: 8),
                             _buildTextField(
                               controller: controller.emailController,
+                              focusNode: controller.emailFocusNode,
                               keyboardType: TextInputType.emailAddress,
+                              onFieldSubmitted: (_) {
+                                FocusScope.of(context)
+                                    .requestFocus(controller.messageFocusNode);
+                              },
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter your email';
@@ -81,6 +92,11 @@ class ContactPage extends StatelessWidget {
                             _buildLabel('Company'),
                             const SizedBox(height: 8),
                             _buildTextField(
+                              focusNode: controller.companyFocusNode,
+                              onFieldSubmitted: (_) {
+                                FocusScope.of(context)
+                                    .requestFocus(controller.messageFocusNode);
+                              },
                               hintText: 'Optional',
                             ),
                             const SizedBox(height: 20),
@@ -88,6 +104,7 @@ class ContactPage extends StatelessWidget {
                             const SizedBox(height: 8),
                             _buildTextField(
                               controller: controller.messageController,
+                              focusNode: controller.messageFocusNode,
                               hintText: 'Tell me about your project or idea...',
                               maxLines: 5,
                               validator: (value) {
@@ -126,7 +143,11 @@ class ContactPage extends StatelessWidget {
                                 () => ElevatedButton.icon(
                                   onPressed: controller.isLoading
                                       ? null
-                                      : controller.submitForm,
+                                      : () {
+                                          // Unfocus before submitting
+                                          FocusScope.of(context).unfocus();
+                                          controller.submitForm();
+                                        },
                                   icon: const Icon(Icons.send_outlined),
                                   label: controller.isLoading
                                       ? const SizedBox(
@@ -204,16 +225,20 @@ class ContactPage extends StatelessWidget {
 
   Widget _buildTextField({
     TextEditingController? controller,
+    FocusNode? focusNode,
     String? hintText,
     int maxLines = 1,
     TextInputType? keyboardType,
     String? Function(String?)? validator,
+    void Function(String)? onFieldSubmitted,
   }) {
     return TextFormField(
       controller: controller,
+      focusNode: focusNode,
       maxLines: maxLines,
       keyboardType: keyboardType,
       validator: validator,
+      onFieldSubmitted: onFieldSubmitted,
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         hintText: hintText,

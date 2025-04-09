@@ -30,6 +30,14 @@ class AboutPage extends GetView<AboutController> {
 
   Widget _buildContent(BuildContext context) {
     return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+          width: 1,
+        ),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -42,9 +50,21 @@ class AboutPage extends GetView<AboutController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'About me',
-                  style: Theme.of(context).textTheme.headlineMedium,
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color:
+                        Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    'About me',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
                 ),
                 const SizedBox(height: 24),
                 _buildParagraph(context,
@@ -56,27 +76,49 @@ class AboutPage extends GetView<AboutController> {
                 _buildParagraph(context,
                     'I also founded Paidly in 2020, a Stripe-integrated invoicing app used by over 2,000 SMEs, and Magier in 2023, an AI startup acquired the same year and accepted into Techstars\' 2024 cohort. I\'ve also published research on accessibility and virtual environments in publications by HFES and SSH. When not designing, I\'m probably playing music.'),
                 const SizedBox(height: 32),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.surface,
-                    foregroundColor: Theme.of(context).colorScheme.onSurface,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Theme.of(context).colorScheme.primary,
+                        Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                      ],
                     ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 16),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "Let's work together",
-                        style: Theme.of(context).textTheme.labelLarge,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                      elevation: 0,
+                      shadowColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      const SizedBox(width: 8),
-                      const Icon(Icons.arrow_forward, size: 18),
-                    ],
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 16),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Let's work together",
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                              ),
+                        ),
+                        const SizedBox(width: 8),
+                        Icon(
+                          Icons.arrow_forward,
+                          size: 18,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -84,9 +126,16 @@ class AboutPage extends GetView<AboutController> {
           ),
 
           // Footer with copyright and social links
-          const SizedBox(height: 48),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(
+                  color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+                  width: 1,
+                ),
+              ),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -101,13 +150,14 @@ class AboutPage extends GetView<AboutController> {
                 ),
                 Row(
                   children: [
-                    _buildSocialIcon(Icons.linear_scale, 'LinkedIn'),
+                    _buildSocialIcon(context, Icons.linear_scale, 'LinkedIn'),
                     const SizedBox(width: 16),
-                    _buildSocialIcon(Icons.code, 'GitHub'),
+                    _buildSocialIcon(context, Icons.code, 'GitHub'),
                     const SizedBox(width: 16),
-                    _buildSocialIcon(Icons.language, 'Dribbble'),
+                    _buildSocialIcon(context, Icons.language, 'Dribbble'),
                     const SizedBox(width: 16),
-                    _buildSocialIcon(Icons.play_circle_fill, 'YouTube'),
+                    _buildSocialIcon(
+                        context, Icons.play_circle_fill, 'YouTube'),
                   ],
                 ),
               ],
@@ -128,15 +178,27 @@ class AboutPage extends GetView<AboutController> {
     );
   }
 
-  Widget _buildSocialIcon(IconData icon, String label) {
+  Widget _buildSocialIcon(BuildContext context, IconData icon, String label) {
     return InkWell(
       onTap: () {
         // Open social media link
       },
-      child: Icon(
-        icon,
-        color: Colors.white.withOpacity(0.7),
-        size: 22,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+            width: 1,
+          ),
+        ),
+        child: Icon(
+          icon,
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+          size: 20,
+        ),
       ),
     );
   }

@@ -14,6 +14,18 @@ class ContactController extends GetxController {
   final _messageController = TextEditingController();
   TextEditingController get messageController => _messageController;
 
+  final _nameFocusNode = FocusNode();
+  FocusNode get nameFocusNode => _nameFocusNode;
+
+  final _emailFocusNode = FocusNode();
+  FocusNode get emailFocusNode => _emailFocusNode;
+
+  final _companyFocusNode = FocusNode();
+  FocusNode get companyFocusNode => _companyFocusNode;
+
+  final _messageFocusNode = FocusNode();
+  FocusNode get messageFocusNode => _messageFocusNode;
+
   final _isLoading = false.obs;
   bool get isLoading => _isLoading.value;
 
@@ -22,6 +34,10 @@ class ContactController extends GetxController {
     _nameController.dispose();
     _emailController.dispose();
     _messageController.dispose();
+    _nameFocusNode.dispose();
+    _emailFocusNode.dispose();
+    _companyFocusNode.dispose();
+    _messageFocusNode.dispose();
     super.onClose();
   }
 
